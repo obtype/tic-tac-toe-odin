@@ -29,28 +29,18 @@ let player2 = playerFactory(2);
 
 const displayHandler = (function() {
 	let gameBoardContainer = document.querySelector(".board");
-	let turn = 1;
-
-	function playTurn(event, mark){
-
-		mark = (turn%2 === 1)? player1.mark : player2.mark;
-
-		event.target.textContent = mark;
-
-		turn++;
-		
-	}
-
-
+	
+	
 
 	return {
-		playTurn
+		
 	}
 })();
 
 const GameBoard = (function() {		//creating a module ,aka. a single use object, using the module pattern. 
 	
 	const num = 5;
+	let gameBoardContainer;
 
 	function hello() {
 		console.log('hello World', num);
@@ -59,7 +49,7 @@ const GameBoard = (function() {		//creating a module ,aka. a single use object, 
 	//testing ends here, real code starts here.
 
 	function _createGameBoard() {
-		const gameBoardContainer = document.createElement('div');
+		gameBoardContainer = document.createElement('div');
 		gameBoardContainer.classList.add('board');
 		const gameTile = document.createElement('div');
 		gameTile.classList.add("tile");
@@ -67,13 +57,76 @@ const GameBoard = (function() {		//creating a module ,aka. a single use object, 
 		for (let i = 1; i <= 9; i++) {
 			let tile = gameTile.cloneNode();
 			tile.setAttribute("index", i);
-			tile.addEventListener("click", displayHandler.playTurn);
+			tile.addEventListener("click", playTurn);
 			gameBoardContainer.appendChild(tile);
 			
 		}
 
 		document.body.appendChild(gameBoardContainer);
 	}
+
+	let turn = 1;
+
+	function playTurn(event){
+
+		let mark = (turn%2 === 1) ? player1.mark : player2.mark;	//player1 always goes first in my game.
+
+		event.target.textContent = mark;
+
+
+		//check if game win condition has been reached, if so, end the game.
+
+		if(checkWinCondition()) {
+			(turn%2 === 1) ? endGame(player1) : endGame(player2);
+			turn = 1;
+			return;
+		}
+
+
+		turn++;
+	}
+
+	
+	function checkWinCondition() {
+		let mark = (turn%2 === 1) ? player1.mark : player2.mark;
+		
+		tile = gameBoardContainer.childNodes;
+		tile.forEach(element => {
+			element.state = (element.textContent === mark )? true : false;
+		});
+
+		/* console.log(tile[0].state, tile[1].state, tile[2].state);
+		console.log(tile[0].state && tile[1].state && tile[2].state); */
+		if((tile[0].state && tile[1].state && tile[2].state) ||
+			(tile[3].state && tile[4].state && tile[5].state) ||
+			(tile[6].state && tile[7].state && tile[8].state) ){
+				console.log("WIn horiszontal");
+			return true;
+		}
+
+		if((tile[0].state && tile[3].state && tile[6].state) ||
+			(tile[1].state && tile[4].state && tile[7].state) ||
+			(tile[2].state && tile[5].state && tile[8].state) ){
+				console.log("WIn vertical");
+			return true;
+		}
+
+		if((tile[0].state && tile[4].state && tile[8].state) ||
+			(tile[6].state && tile[4].state && tile[2].state) ){
+				console.log("WIn diagonal");
+			return true;
+		}
+
+
+	}
+
+
+	function endGame(winner){
+
+		console.log("game has ended", winner, " has won the game.");
+
+	}
+
 
 	
 
