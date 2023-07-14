@@ -64,12 +64,16 @@ const GameBoard = (function() {		//creating a module ,aka. a single use object, 
 
 		document.body.appendChild(gameBoardContainer);
 	}
+	
 
 	let turn = 1;
 
 	function playTurn(event){
 
 		let mark = (turn%2 === 1) ? player1.mark : player2.mark;	//player1 always goes first in my game.
+		if(event.target.textContent){
+			return;
+		}
 
 		event.target.textContent = mark;
 
@@ -79,7 +83,26 @@ const GameBoard = (function() {		//creating a module ,aka. a single use object, 
 		if(checkWinCondition()) {
 			(turn%2 === 1) ? endGame(player1) : endGame(player2);
 			turn = 1;
+			
 			return;
+		}
+		let draw = true;
+		gameBoardContainer.childNodes.forEach((node) => {
+			if(node.textContent === ""){
+				draw = false;
+			}});
+		
+		if(draw === true){
+			console.log("The game is DRAW.")
+			let reset = prompt("Will you play again? (y/n)");
+			if(reset === "y"){
+				gameBoardContainer.childNodes.forEach((node) => node.textContent = "");
+			}
+			else{
+				gameBoardContainer.childNodes.forEach((node) => node.removeEventListener("click", playTurn));
+				console.log("reset page to restart game.");
+			}
+
 		}
 
 
@@ -90,7 +113,7 @@ const GameBoard = (function() {		//creating a module ,aka. a single use object, 
 	function checkWinCondition() {
 		let mark = (turn%2 === 1) ? player1.mark : player2.mark;
 		
-		tile = gameBoardContainer.childNodes;
+		let tile = gameBoardContainer.childNodes;
 		tile.forEach(element => {
 			element.state = (element.textContent === mark )? true : false;
 		});
@@ -123,7 +146,16 @@ const GameBoard = (function() {		//creating a module ,aka. a single use object, 
 
 	function endGame(winner){
 
-		console.log("game has ended", winner, " has won the game.");
+		console.log("The game has ended,", winner== player1? "Player 1" : "Player 2", "has won the game.");
+
+		let reset = prompt("Will you play again? (y/n)");
+			if(reset === "y"){
+				gameBoardContainer.childNodes.forEach((node) => node.textContent = "");
+			}
+			else{
+				gameBoardContainer.childNodes.forEach((node) => node.removeEventListener("click", playTurn));
+				console.log("reset page to restart game.");
+			}
 
 	}
 
