@@ -1,0 +1,13 @@
+.grid {
+    border: solid 3px black;
+    width: fit-content;
+    display: grid;
+    grid-template-columns: repeat(3, 50px) ;
+}
+
+.cell {
+    height: 30px;
+    width: 30px;
+    margin: 5px;
+    border: solid 1px black;
+}
