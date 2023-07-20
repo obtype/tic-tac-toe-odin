@@ -151,6 +151,17 @@ let displayController = function() {
 
     let resetButton = document.querySelector("button.reset").addEventListener("click", _resetClick);
 
+    document.querySelector('button[data-player="1"]').addEventListener("click", () => {
+        player1.name = prompt("Enter name for player 1");
+        updateScoreBoard();
+    })
+
+    document.querySelector('button[data-player="2"]').addEventListener("click", () => {
+        player2.name = prompt("Enter name for player 2");
+        updateScoreBoard();
+    })
+
+
     function _resetClick(){
         Game.endGame();
         updateGrid();
